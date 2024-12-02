@@ -1,5 +1,5 @@
 let currentPage = 1;
-const rowsPerPage = 5;
+const rowsPerPage = 8;
 let data = [];
 let filteredData = [];
 let dataToDelete = null;
@@ -36,16 +36,29 @@ function renderTable() {
     renderPagination();
 }
 
+// / Fungsi untuk merender pagination
 function renderPagination() {
-    const totalPages = Math.ceil(filteredData.length / rowsPerPage);
-    const pagination = document.getElementById('pagination');
-    pagination.innerHTML = '';
+    const totalPages = Math.ceil(filteredData.length / rowsPerPage);  // Menghitung total halaman
+    const paginationContainer = document.getElementById('pagination-buttons');
+    paginationContainer.innerHTML = '';  // Hapus halaman sebelumnya
 
+    // Tombol Previous
+    const prevBtn = document.getElementById('prevBtn');
+    prevBtn.classList.toggle('disabled', currentPage === 1); // Disable Previous jika di halaman pertama
+    prevBtn.addEventListener('click', () => {
+        if (currentPage > 1) {
+            currentPage--;
+            renderTable();
+        }
+    });
+
+    // Tombol Halaman Dinamis
     for (let i = 1; i <= totalPages; i++) {
         const pageButton = document.createElement('li');
         pageButton.classList.add('cursor-pointer', 'px-4', 'py-2', 'bg-gray-200', 'rounded-md');
         pageButton.textContent = i;
 
+        // Menandai halaman aktif
         if (i === currentPage) {
             pageButton.classList.add('bg-blue-600', 'text-white');
         }
@@ -55,8 +68,18 @@ function renderPagination() {
             renderTable();
         });
 
-        pagination.appendChild(pageButton);
+        paginationContainer.appendChild(pageButton);
     }
+
+    // Tombol Next
+    const nextBtn = document.getElementById('nextBtn');
+    nextBtn.classList.toggle('disabled', currentPage === totalPages); // Disable Next jika di halaman terakhir
+    nextBtn.addEventListener('click', () => {
+        if (currentPage < totalPages) {
+            currentPage++;
+            renderTable();
+        }
+    });
 }
 
 function showDeleteModal(nik) {
@@ -275,7 +298,7 @@ async function updateRow(nik) {
             filteredData = [...data];  // Menyaring data yang ada
             renderTable();  // Render tabel dengan data terbaru
             alert('Data berhasil diperbarui');
-            closeModalEdit();  // Menutup modal
+            closeModal();  // Menutup modal
         } else {
             console.error('Gagal memperbarui data');
             alert('Gagal memperbarui data');
@@ -502,3 +525,5 @@ document.getElementById('edit-modal').addEventListener('click', function(event) 
         closeEditModal();  // Menutup modal jika area luar modal diklik
     }
 });
+
+

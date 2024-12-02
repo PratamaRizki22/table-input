@@ -1,7 +1,40 @@
-/* frontend/style.css */
+
+/* Default styles */
 body {
     font-family: 'Arial', sans-serif;
+    background-color: white;  /* Warna background terang */
+    color: black;  /* Warna teks di mode terang */
+    transition: background-color 0.3s ease; /* Hanya transisi latar belakang */
+}
+
+/* Dark mode (untuk background body saja) */
+body.dark {
+    background-color: #1a202c; /* Warna background gelap */
+}
+
+/* Dark mode header styles */
+body.dark header {
+    background-color: #2d3748; /* Dark background untuk header */
+}
+
+/* Styles for buttons */
+button {
+    background-color: #ffffff; /* Warna tombol mode terang */
+    color: black; /* Teks tombol mode terang */
+}
+
+/* Hover effects on the button */
+button:hover {
+    background-color: #f0f0f0; /* Hover mode terang */
 }
 
 
-/* https://chatgpt.com/c/674bcdce-5ba0-8005-ba04-63953f0726f0 */
+
+/* Additional hover effects for other elements */
+a:hover, .link:hover {
+    color: #4a5568; /* Link color on hover */
+}
+
+body.dark a:hover, body.dark .link:hover {
+    color: #cbd5e0; /* Link color on hover in dark mode */
+}

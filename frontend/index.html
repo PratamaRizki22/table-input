@@ -4,6 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Data Penduduk</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&family=Fira+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+        
+        body {
+            font-family: 'Fira Sans', sans-serif; /* Default font untuk body */
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Montserrat', sans-serif; /* Menggunakan font Montserrat untuk header */
+            font-weight: bold; /* Menjadikan judul lebih tebal */
+        }
+
+        code, pre {
+            font-family: 'Fira Code', monospace; /* Menampilkan font Fira Code untuk elemen code dan pre */
+        }
+    </style>
+    <link rel="stylesheet" href="./style.css">
     <link rel="icon" href="./assets/images/icon.ico" type="image/x-icon">
    
     <!-- Link CDN Tailwind CSS -->
@@ -86,9 +103,9 @@
                                 </svg>
                             </div>
                             <div class="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
-                                <h3 class="text-base font-semibold text-gray-900" id="modal-title">Delete Data</h3>
+                                <h3 class="text-base font-semibold text-gray-900" id="modal-title">Hapus data</h3>
                                 <div class="mt-2">
-                                    <p class="text-sm text-gray-500">Are you sure you want to delete this data? This action cannot be undone.</p>
+                                    <p class="text-sm text-gray-500">Apakah anda yakin untuk menghapus data ini? Setelah diproses data ini tidak bisa dikembalikan</p>
                                 </div>
                             </div>
                         </div>
@@ -134,9 +151,21 @@
                             Search
                         </button>
                     </div>
-                </form>          
-                <!-- <input id="search" type="text" onkeyup="searchTable()" placeholder="Search..." class="px-3 py-2 border border-gray-300 rounded-md text-black w-full sm:w-auto"> -->
+                </form>     
+                <button onclick="(() => document.body.classList.toggle('dark'))()"
+                    class="h-12 w-12 rounded-lg p-2 hover:bg-gray-100 dark:hover:bg-gray-700">
+                    <svg class="fill-violet-700 block dark:hidden" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+                    </svg>
+                    <svg class="fill-yellow-500 hidden dark:block" fill="currentColor" viewBox="0 0 20 20">
+                        <path
+                            d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"
+                            fill-rule="evenodd" clip-rule="evenodd"></path>
+                    </svg>
+                </button>     
             </div>
+
+
         </div>
     </header>
    
@@ -149,8 +178,16 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
             </svg>
         </button>
-
-        <h2 class="text-xl font-semibold mb-4">Add New Data</h2>
+        <div class="flex items-center">
+            <!-- Icon SVG -->
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 mr-2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+            </svg>
+          
+            <!-- Judul -->
+            <h2 class="text-xl font-semibold mb-4 border-b-2 border-gray-300 mt-2">Data penduduk baru</h2>
+          </div>
+        
         <!-- Form Steps -->
         <div id="form-steps">
             <!-- Step 1 -->
@@ -246,12 +283,45 @@
                 </tbody>
             </table>
 
-            <!-- Pagination Section -->
-            <div class="flex justify-center mt-4">
-                <ul id="pagination" class="flex space-x-2"></ul>
+    <!-- Pagination Section -->
+    <nav aria-label="Page navigation example" class="fixed bottom-0 left-1/2 transform -translate-x-1/2 mb-4">
+        <ul class="inline-flex -space-x-px text-base h-10">
+            <!-- Tombol Previous -->
+            <li>
+                <a href="#" id="prevBtn" class="flex items-center justify-center px-4 h-10 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                    Previous
+                </a>
+            </li>
+
+            <!-- Tombol Halaman (dinamis, akan ditambahkan dengan JavaScript) -->
+            <div id="pagination-buttons" class="flex space-x-2">
+                <!-- Tombol halaman akan muncul di sini -->
             </div>
+
+            <!-- Tombol Next -->
+            <li>
+                <a href="#" id="nextBtn" class="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                    Next
+                </a>
+            </li>
+        </ul>
+    </nav>
+            
+            
         </div>
     </div>
+
+    <a href="https://github.com/PratamaRizki22" class="animate-bounce focus:animate-none hover:animate-none inline-flex text-md font-medium bg-indigo-900 mt-3 px-4 py-2 rounded-lg tracking-wide text-white fixed bottom-4 left-4">
+        <!-- Ikon -->
+        <svg class="h-6 w-6 text-white mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
+        </svg>
+    
+        <!-- Teks -->
+        <span class="ml-2">@pratamarizki22</span>
+    </a>
+    
+      
 
     <!-- Link to JavaScript -->
     <script src="script.js"></script>

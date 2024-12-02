@@ -1,10 +1,8 @@
+// tailwind.config.js
 module.exports = {
-    darkMode: 'class', // Aktifkan dark mode berbasis kelas
-    theme: {
-      extend: {
-        // Anda bisa menambah custom theme di sini
-      },
-    },
-    plugins: [],
-  }
-  
+  darkMode: 'class',  // Aktifkan dark mode dengan kelas
+  theme: {
+    extend: {},
+  },
+  plugins: [],
+}
