@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplikasi FastAPI + Tailwind</title>
+    <!-- Link CDN Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+
+    <!-- Modal untuk Edit Data -->
+    <div id="edit-modal" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center hidden">
+        <div class="bg-white p-6 rounded-lg w-11/12 md:w-96">
+            <h2 class="text-xl font-semibold mb-4">Edit Data</h2>
+            <div>
+                <label for="edit-nik" class="block text-gray-700">NIK</label>
+                <input type="text" id="edit-nik" class="w-full px-3 py-2 border border-gray-300 rounded-md mb-2" required disabled>
+            </div>
+            <div>
+                <label for="edit-nama" class="block text-gray-700">Nama</label>
+                <input type="text" id="edit-nama" class="w-full px-3 py-2 border border-gray-300 rounded-md mb-2" required>
+            </div>
+            <div>
+                <label for="edit-tempat-lahir" class="block text-gray-700">Tempat Lahir</label>
+                <input type="text" id="edit-tempat-lahir" class="w-full px-3 py-2 border border-gray-300 rounded-md mb-2" required>
+            </div>
+            <div>
+                <label for="edit-tanggal-lahir" class="block text-gray-700">Tanggal Lahir</label>
+                <input type="date" id="edit-tanggal-lahir" class="w-full px-3 py-2 border border-gray-300 rounded-md mb-2" required>
+            </div>
+            <div>
+                <label for="edit-jenis-kelamin" class="block text-gray-700">Jenis Kelamin</label>
+                <select id="edit-jenis-kelamin" class="w-full px-3 py-2 border border-gray-300 rounded-md mb-2" required>
+                    <option value="Laki-laki">Laki-laki</option>
+                    <option value="Perempuan">Perempuan</option>
+                </select>
+            </div>
+            <div>
+                <label for="edit-agama" class="block text-gray-700">Agama</label>
+                <select id="edit-agama" class="w-full px-3 py-2 border border-gray-300 rounded-md mb-2" required>
+                    <option value="Islam">Islam</option>
+                    <option value="Kristen">Kristen</option>
+                    <option value="Katolik">Katolik</option>
+                    <option value="Hindu">Hindu</option>
+                    <option value="Buddha">Buddha</option>
+                    <option value="Konghucu">Konghucu</option>
+                </select>
+            </div>
+            <div>
+                <label for="edit-pekerjaan" class="block text-gray-700">Pekerjaan</label>
+                <input type="text" id="edit-pekerjaan" class="w-full px-3 py-2 border border-gray-300 rounded-md mb-2" required>
+            </div>
+            <div>
+                <label for="edit-kewarganegaraan" class="block text-gray-700">Kewarganegaraan</label>
+                <select id="edit-kewarganegaraan" class="w-full px-3 py-2 border border-gray-300 rounded-md mb-4" required>
+                    <option value="WNI">WNI</option>
+                    <option value="WNA">WNA</option>
+                </select>
+            </div>
+            <div class="flex justify-end gap-4">
+                <button onclick="closeEditModal()" class="px-4 py-2 bg-gray-400 text-white rounded-md">Cancel</button>
+                <button id="save-edit-button" onclick="updateRow()" class="px-4 py-2 bg-blue-600 text-white rounded-md">Update</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Konfirmasi Hapus -->
+    <div id="delete-modal" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center hidden">
+        <div class="bg-white p-6 rounded-lg w-11/12 md:w-96">
+            <h2 class="text-xl font-semibold mb-4">Apakah Anda yakin ingin menghapus data ini?</h2>
+            <div class="flex justify-end gap-4">
+                <button id="delete-cancel" class="px-4 py-2 bg-gray-400 text-white rounded-md">Cancel</button>
+                <button id="delete-confirm" class="px-4 py-2 bg-red-600 text-white rounded-md">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="bg-gray-800 text-white py-4">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-2xl font-semibold">Data Penduduk</h1>
+            <div class="flex items-center gap-4">
+                <input id="search" type="text" onkeyup="searchTable()" placeholder="Search..." class="px-3 py-2 border border-gray-300 rounded-md text-black w-full sm:w-auto">
+                <button onclick="showModal()" class="bg-blue-600 text-white px-4 py-2 rounded-md">Add Data</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Modal untuk input data -->
+    <div id="add-modal" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center hidden">
+        <div class="bg-white p-6 rounded-lg w-11/12 md:w-96">
+            <h2 class="text-xl font-semibold mb-4">Add New Data</h2>
+            <div>
+                <label for="nik" class="block text-gray-700">NIK</label>
+                <input type="text" id="nik" class="w-full px-3 py-2 border border-gray-300 rounded-md mb-2" required>
+            </div>
+            <div>
+                <label for="nama" class="block text-gray-700">Nama</label>
+                <input type="text" id="nama" class="w-full px-3 py-2 border border-gray-300 rounded-md mb-2" required>
+            </div>
+            <div>
+                <label for="tempat-lahir" class="block text-gray-700">Tempat Lahir</label>
+                <input type="text" id="tempat-lahir" class="w-full px-3 py-2 border border-gray-300 rounded-md mb-2" required>
+            </div>
+            <div>
+                <label for="tanggal-lahir" class="block text-gray-700">Tanggal Lahir</label>
+                <input type="date" id="tanggal-lahir" class="w-full px-3 py-2 border border-gray-300 rounded-md mb-2" required>
+            </div>
+            <div>
+                <label for="jenis-kelamin" class="block text-gray-700">Jenis Kelamin</label>
+                <select id="jenis-kelamin" class="w-full px-3 py-2 border border-gray-300 rounded-md mb-2" required>
+                    <option value="Laki-laki">Laki-laki</option>
+                    <option value="Perempuan">Perempuan</option>
+                </select>
+            </div>
+            <div>
+                <label for="agama" class="block text-gray-700">Agama</label>
+                <select id="agama" class="w-full px-3 py-2 border border-gray-300 rounded-md mb-2" required>
+                    <option value="Islam">Islam</option>
+                    <option value="Kristen">Kristen</option>
+                    <option value="Katolik">Katolik</option>
+                    <option value="Hindu">Hindu</option>
+                    <option value="Buddha">Buddha</option>
+                    <option value="Konghucu">Konghucu</option>
+                </select>
+            </div>
+            <div>
+                <label for="pekerjaan" class="block text-gray-700">Pekerjaan</label>
+                <input type="text" id="pekerjaan" class="w-full px-3 py-2 border border-gray-300 rounded-md mb-2" required>
+            </div>
+            <div>
+                <label for="kewarganegaraan" class="block text-gray-700">Kewarganegaraan</label>
+                <select id="kewarganegaraan" class="w-full px-3 py-2 border border-gray-300 rounded-md mb-4" required>
+                    <option value="WNI">WNI</option>
+                    <option value="WNA">WNA</option>
+                </select>
+            </div>
+            <div class="flex justify-end gap-4">
+                <button onclick="closeModal()" class="px-4 py-2 bg-gray-400 text-white rounded-md">Cancel</button>
+                <button id="save-button" onclick="createRow()" class="px-4 py-2 bg-green-600 text-white rounded-md">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container mx-auto mt-6">
+        <div class="bg-white shadow-lg rounded-lg overflow-x-auto">
+            <table class="min-w-full border-collapse table-auto">
+                <thead class="bg-gray-200">
+                    <tr>
+                        <th class="px-4 py-2 text-gray-800">NIK</th>
+                        <th class="px-4 py-2 text-gray-800">Nama</th>
+                        <th class="px-4 py-2 text-gray-800">Tempat Lahir</th>
+                        <th class="px-4 py-2 text-gray-800">Tanggal Lahir</th>
+                        <th class="px-4 py-2 text-gray-800">Jenis Kelamin</th>
+                        <th class="px-4 py-2 text-gray-800">Agama</th>
+                        <th class="px-4 py-2 text-gray-800">Pekerjaan</th>
+                        <th class="px-4 py-2 text-gray-800">Kewarganegaraan</th>
+                        <th class="px-4 py-2 text-gray-800">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="table-body">
+                    <!-- Data rows will be inserted here -->
+                </tbody>
+            </table>
+
+            <!-- Pagination Section -->
+            <div class="flex justify-center mt-4">
+                <ul id="pagination" class="flex space-x-2"></ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Link to JavaScript -->
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,51 @@
+services:
+  fastapi_app:
+    build:
+      context: .  # Menunjukkan konteks build untuk FastAPI (menggunakan Dockerfile yang ada di folder root)
+      dockerfile: backend/Dockerfile  # Path ke Dockerfile backend FastAPI
+    ports:
+      - "8000:8000"  # Port di host 8000 dihubungkan ke port 8000 di container
+    depends_on:
+      - postgres_db  # FastAPI membutuhkan postgres_db sebelum bisa dijalankan
+    environment:
+      - DATABASE_URL=postgresql://user:password@172.20.0.3:5432/testdb  # Koneksi DB
+    
+    networks:
+      mynetwork:  # Menggunakan jaringan internal untuk berkomunikasi antar service
+        ipv4_address: 172.20.0.4
+
+  postgres_db:
+    image: postgres:alpine
+    container_name: desaifrontend-postgres
+    restart: always
+    volumes:
+      - /home/dominepa/Desktop/postgresql_data:/var/lib/postgresql/data  # Simpan data PostgreSQL di Desktop
+    ports:
+      - "5432:5432"  # Port PostgreSQL yang bisa diakses dari luar container
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: testdb
+      PGDATA: /var/lib/postgresql/data/pgdata  # Tentukan lokasi PGDATA
+    networks:
+      mynetwork:  # Menggunakan jaringan internal untuk berkomunikasi antar service
+        ipv4_address: 172.20.0.3
+
+  frontend:
+    build:
+      context: ./frontend  # Folder frontend untuk build Dockerfile frontend
+    ports:
+      - "3000:80"  # Menyajikan frontend pada port 3000
+    networks:
+      mynetwork:  # Menggunakan jaringan internal untuk berkomunikasi antar service
+        ipv4_address: 172.20.0.2
+
+networks:
+  mynetwork:  # Jaringan internal untuk semua service
+    driver: bridge
+    ipam:
+      config:
+        - subnet: "172.20.0.0/16"
+    
+
+
