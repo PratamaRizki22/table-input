@@ -26,8 +26,8 @@ function renderTable() {
             <td class="px-4 py-2">${item.pekerjaan}</td>
             <td class="px-4 py-2">${item.kewarganegaraan}</td>
             <td class="px-4 py-2 text-center">
-                <button class="text-blue-600" onclick="editData(${item.nik})">Edit</button>
-                <button class="text-red-600" onclick="showDeleteModal(${item.nik})">Delete</button>
+                <button type="button" class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-full text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700" onclick="editData(${item.nik})">Edit</button>
+                <button type="button" class="text-white bg-red-700 hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900" onclick="showDeleteModal(${item.nik})">Delete</button>
             </td>
         </tr>`;
         tableBody.insertAdjacentHTML('beforeend', row);
@@ -36,7 +36,6 @@ function renderTable() {
     renderPagination();
 }
 
-// Fungsi untuk membuat pagination
 function renderPagination() {
     const totalPages = Math.ceil(filteredData.length / rowsPerPage);
     const pagination = document.getElementById('pagination');
@@ -60,17 +59,17 @@ function renderPagination() {
     }
 }
 
-// Menampilkan modal konfirmasi hapus
 function showDeleteModal(nik) {
     dataToDelete = nik;
     const modal = document.getElementById('delete-modal');
     modal.classList.remove('hidden');
 }
 
-// Menutup modal konfirmasi hapus
 function closeDeleteModal() {
     const modal = document.getElementById('delete-modal');
     modal.classList.add('hidden');
+    resetForm()
+
 }
 
 async function deleteRow() {
@@ -85,20 +84,16 @@ async function deleteRow() {
         });
 
         if (response.ok) {
-            // Hapus data dari array data yang sudah ter-filter
             data = data.filter(item => item.nik !== dataToDelete);
             filteredData = [...data];
             
-            // Hapus elemen baris yang ada di tabel berdasarkan NIK
             const rowToDelete = document.getElementById(dataToDelete);
             if (rowToDelete) {
                 rowToDelete.remove(); // Menghapus elemen baris dari DOM
             }
 
-            // Render ulang tabel jika diperlukan (misalnya setelah filter atau sort)
             renderTable();
 
-            // Tutup modal delete dan tampilkan alert
             closeDeleteModal();
             alert('Data berhasil dihapus');
         } else {
@@ -112,11 +107,9 @@ async function deleteRow() {
 }
 
 
-// Menambahkan event listener ke tombol konfirmasi dan cancel
 document.getElementById('delete-confirm').addEventListener('click', deleteRow);
 document.getElementById('delete-cancel').addEventListener('click', closeDeleteModal);
 
-// Menambahkan data baru
 async function createRow() {
     const nik = document.getElementById('nik').value;
     const nama = document.getElementById('nama').value;
@@ -127,17 +120,31 @@ async function createRow() {
     const pekerjaan = document.getElementById('pekerjaan').value;
     const kewarganegaraan = document.getElementById('kewarganegaraan').value;
 
-    if (!nik || !nama || !tempatLahir || !tanggalLahir || !jenisKelamin || !agama || !pekerjaan || !kewarganegaraan) {
-        alert("Semua data harus diisi!");
-        return;
+    const finalStep = document.querySelector('.step:not(.hidden)');
+    if (!validateStep(finalStep)) {
+        return; 
     }
 
-
+    // Pastikan NIK terdiri dari 16 digit
     if (nik.length !== 16) {
         alert("NIK harus terdiri dari 16 digit!");
         return;
     }
 
+    const isNikUnique = await checkNikUniqueness(nik);
+    if (!isNikUnique) {
+        const shouldChangeNik = confirm("NIK sudah terdaftar, silakan ubah NIK atau batal input data.");
+        if (shouldChangeNik) {
+            return; // Jika user memilih untuk mengubah NIK, proses dibatalkan dan form tetap terbuka
+        } else {
+            resetForm();  // Jika user memilih untuk membatalkan, form akan direset
+            closeModal();  // Menutup modal
+            alert("Input data dibatalkan.");
+            return;  // Menghentikan proses
+        }
+    }
+
+    // Buat objek data baru
     const newData = {
         nik,
         nama,
@@ -149,6 +156,7 @@ async function createRow() {
         kewarganegaraan
     };
 
+    // Kirim data ke server jika NIK unik
     try {
         const response = await fetch(baseUrl, {
             method: 'POST',
@@ -174,62 +182,61 @@ async function createRow() {
         alert('Terjadi kesalahan saat menambahkan data');
     }
 
-    // Reset input form setelah data disimpan
-    document.getElementById("nik").value = "";
-    document.getElementById("nama").value = "";
-    document.getElementById("tempat-lahir").value = "";
-    document.getElementById("tanggal-lahir").value = "";
-    document.getElementById("jenis-kelamin").value = "Laki-laki";
-    document.getElementById("agama").value = "Islam";
-    document.getElementById("pekerjaan").value = "";
-    document.getElementById("kewarganegaraan").value = "WNI";
-    
+    resetForm();
     closeModal();
 }
+
+
 
 // mengedit data
 async function editData(nik) {
     nik = nik.toString().trim(); // Mengkonversi ke string dan menghapus spasi ekstra
 
-    dataToEdit = data.find(item => item.nik.toString().trim() === nik);
+    // Mencari data berdasarkan NIK
+    const dataToEdit = data.find(item => item.nik.toString().trim() === nik);
 
     if (dataToEdit) {
         console.log('Data yang akan diedit:', dataToEdit);  // Menampilkan data yang akan diedit
 
-        document.getElementById('nik').value = dataToEdit.nik;
-        document.getElementById('nama').value = dataToEdit.nama;
-        document.getElementById('tempat-lahir').value = dataToEdit.tempat_lahir;
-        document.getElementById('tanggal-lahir').value = dataToEdit.tanggal_lahir;
-        document.getElementById('jenis-kelamin').value = dataToEdit.jenis_kelamin;
-        document.getElementById('agama').value = dataToEdit.agama;
-        document.getElementById('pekerjaan').value = dataToEdit.pekerjaan;
-        document.getElementById('kewarganegaraan').value = dataToEdit.kewarganegaraan;
+        // Mengisi input modal dengan data yang akan diedit
+        document.getElementById('edit-nik').value = dataToEdit.nik; // NIK tetap tidak bisa diubah
+        document.getElementById('edit-nama').value = dataToEdit.nama;
+        document.getElementById('edit-tempat-lahir').value = dataToEdit.tempat_lahir;
+        document.getElementById('edit-tanggal-lahir').value = dataToEdit.tanggal_lahir;
+        document.getElementById('edit-jenis-kelamin').value = dataToEdit.jenis_kelamin;
+        document.getElementById('edit-agama').value = dataToEdit.agama;
+        document.getElementById('edit-pekerjaan').value = dataToEdit.pekerjaan;
+        document.getElementById('edit-kewarganegaraan').value = dataToEdit.kewarganegaraan;
 
         // Menampilkan modal untuk mengedit data
-        const modal = document.getElementById('add-modal');
+        const modal = document.getElementById('edit-modal');
         modal.classList.remove('hidden');
 
-        // Ubah tombol "Save" untuk mengupdate data
-        const saveButton = document.querySelector('#add-modal button:nth-child(2)');
+        // Mengubah tombol "Save" menjadi "Update"
+        const saveButton = document.querySelector('#edit-modal button:nth-child(2)');
         saveButton.textContent = "Update";
-        saveButton.onclick = () => updateRow(nik); // Memanggil fungsi update ketika tombol ditekan
+
+        // Menyimpan NIK pada tombol agar bisa digunakan saat update
+        saveButton.onclick = () => updateRow(dataToEdit.nik); // Memanggil fungsi update ketika tombol ditekan
     } else {
         // Jika data tidak ditemukan, tampilkan pesan
-            alert('Data dengan NIK', nik, 'tidak ditemukan.');
-
+        alert(`Data dengan NIK ${nik} tidak ditemukan.`);
     }
 }
 
-async function updateRow(nik) {
-    const nikVal = document.getElementById('nik').value;
-    const nama = document.getElementById('nama').value;
-    const tempat_lahir = document.getElementById('tempat-lahir').value;
-    const tanggal_lahir = document.getElementById('tanggal-lahir').value;
-    const jenis_kelamin = document.getElementById('jenis-kelamin').value;
-    const agama = document.getElementById('agama').value;
-    const pekerjaan = document.getElementById('pekerjaan').value;
-    const kewarganegaraan = document.getElementById('kewarganegaraan').value;
 
+async function updateRow(nik) {
+    // Mengambil nilai dari form modal
+    const nikVal = document.getElementById('edit-nik').value;
+    const nama = document.getElementById('edit-nama').value;
+    const tempat_lahir = document.getElementById('edit-tempat-lahir').value;
+    const tanggal_lahir = document.getElementById('edit-tanggal-lahir').value;
+    const jenis_kelamin = document.getElementById('edit-jenis-kelamin').value;
+    const agama = document.getElementById('edit-agama').value;
+    const pekerjaan = document.getElementById('edit-pekerjaan').value;
+    const kewarganegaraan = document.getElementById('edit-kewarganegaraan').value;
+
+    // Membuat objek dengan data yang akan diperbarui
     const updatedData = {
         nik: nikVal,
         nama,
@@ -240,6 +247,17 @@ async function updateRow(nik) {
         pekerjaan,
         kewarganegaraan
     };
+
+    // Melakukan pengecekan apakah ada perubahan pada data
+    const dataToEdit = data.find(item => item.nik === nik);
+
+    const dataHasChanged = Object.keys(updatedData).some(key => updatedData[key] !== dataToEdit[key]);
+
+    if (!dataHasChanged) {
+        alert('Tidak ada perubahan data.');
+        closeModalEdit(); // Tutup modal jika tidak ada perubahan
+        return;
+    }
 
     try {
         const response = await fetch(`${baseUrl}${nik}/`, {
@@ -254,10 +272,10 @@ async function updateRow(nik) {
             const dataResponse = await response.json();
             // Memperbarui data di array setelah berhasil diubah
             data = data.map(item => item.nik === nik ? dataResponse : item);
-            filteredData = [...data];
-            renderTable();
-            closeModal();
+            filteredData = [...data];  // Menyaring data yang ada
+            renderTable();  // Render tabel dengan data terbaru
             alert('Data berhasil diperbarui');
+            closeModalEdit();  // Menutup modal
         } else {
             console.error('Gagal memperbarui data');
             alert('Gagal memperbarui data');
@@ -266,6 +284,11 @@ async function updateRow(nik) {
         console.error('Terjadi kesalahan:', error);
         alert('Terjadi kesalahan saat memperbarui data');
     }
+}
+
+function closeModalEdit() {
+    const modal = document.getElementById('edit-modal');
+    modal.classList.add('hidden');
 }
 
 
@@ -295,10 +318,187 @@ function closeModal() {
     modal.classList.add('hidden');
 }
 
-// Inisialisasi data ketika halaman dimuat
 window.addEventListener('DOMContentLoaded', async () => {
     const response = await fetch(baseUrl);
     data = await response.json();
     filteredData = [...data];
     renderTable();
+});
+
+let currentStep = 0;
+const steps = document.querySelectorAll('.step');
+const prevButton = document.getElementById('prev-button');
+const nextButton = document.getElementById('next-button');
+const saveButton = document.getElementById('save-button');
+
+// Show current step
+function showStep(stepIndex) {
+    steps.forEach((step, index) => {
+        step.classList.add('hidden'); // Hide all steps
+        if (index === stepIndex) {
+            step.classList.remove('hidden'); // Show the current step
+        }
+    });
+
+    // Show or hide Previous and Next buttons
+    if (stepIndex === 0) {
+        prevButton.classList.add('hidden');
+    } else {
+        prevButton.classList.remove('hidden');
+    }
+
+    if (stepIndex === steps.length - 1) {
+        nextButton.classList.add('hidden');
+        saveButton.classList.remove('hidden');
+    } else {
+        nextButton.classList.remove('hidden');
+        saveButton.classList.add('hidden');
+    }
+}
+
+async function nextStep() {
+    const currentStep = document.querySelector('.step:not(.hidden)');
+    
+    // Validasi langkah saat ini sebelum melanjutkan ke langkah berikutnya
+    const isValid = await validateStep(currentStep);
+    if (!isValid) {
+        return;  // Hentikan proses jika validasi gagal
+    }
+
+    const nextStep = currentStep.nextElementSibling;
+
+    if (nextStep && nextStep.classList.contains('step')) {
+        currentStep.classList.add('hidden');
+        nextStep.classList.remove('hidden');
+
+        // Menyembunyikan tombol 'Next' jika berada di langkah terakhir
+        if (!nextStep.nextElementSibling || !nextStep.nextElementSibling.classList.contains('step')) {
+            document.getElementById('next-button').classList.add('hidden');
+            document.getElementById('save-button').classList.remove('hidden');
+        }
+
+        // Menampilkan tombol 'Previous'
+        document.getElementById('prev-button').classList.remove('hidden');
+    }
+}
+
+// Previous button click handler
+function prevStep() {
+    const currentStep = document.querySelector('.step:not(.hidden)');
+    const prevStep = currentStep.previousElementSibling;
+
+    if (prevStep && prevStep.classList.contains('step')) {
+        currentStep.classList.add('hidden');
+        prevStep.classList.remove('hidden');
+
+        // Hide previous button on the first step
+        if (!prevStep.previousElementSibling || !prevStep.previousElementSibling.classList.contains('step')) {
+            document.getElementById('prev-button').classList.add('hidden');
+        }
+
+        // Show next button
+        document.getElementById('next-button').classList.remove('hidden');
+        document.getElementById('save-button').classList.add('hidden');
+    }
+}
+
+// Function to open the modal
+function openModal() {
+    document.getElementById('add-modal').classList.remove('hidden');
+}
+
+
+
+// Initialize the modal by showing the first step
+showStep(currentStep);
+
+
+// Function to validate inputs in the current step
+async function validateStep(step) {
+    const inputs = step.querySelectorAll('input, select');
+    
+    // Cek apakah semua field sudah diisi
+    for (const input of inputs) {
+        if (!input.value.trim()) {
+            alert("Semua data harus diisi!");
+            return false;  // Jika ada field kosong, berhenti
+        }
+
+        // Validasi NIK (16 digit)
+        if (input.id === 'nik' && !/^\d{16}$/.test(input.value)) {
+            alert("NIK harus terdiri dari 16 digit!");
+            return false;  // Jika NIK tidak valid, berhenti
+        }
+    }
+
+    // Validasi NIK unik (jika langkah mengharuskan NIK)
+    const nik = document.getElementById('nik').value;
+    const isNikUnique = await checkNikUniqueness(nik);
+    if (!isNikUnique) {
+        alert("NIK sudah ada, silakan gunakan NIK yang lain!");
+        return false;  // Jika NIK sudah ada, hentikan proses
+    }
+
+    return true;  // Semua field sudah terisi dan valid
+}
+
+function resetForm() {
+    // Clear all inputs
+    const inputs = document.querySelectorAll('#add-modal input, #add-modal select');
+    inputs.forEach(input => input.value = '');
+
+    // Hide all steps
+    const steps = document.querySelectorAll('.step');
+    steps.forEach(step => step.classList.add('hidden'));
+
+    // Show the first step
+    const firstStep = document.querySelector('.step');
+    if (firstStep) firstStep.classList.remove('hidden');
+
+    // Reset buttons
+    document.getElementById('next-button').classList.remove('hidden');
+    document.getElementById('prev-button').classList.add('hidden');
+    document.getElementById('save-button').classList.add('hidden');
+}
+
+async function checkNikUniqueness(nik) {
+    try {
+        // Mengambil data dari API untuk memeriksa NIK
+        const response = await fetch(`http://172.20.0.4:8000/penduduk/check-nik/${nik}`);
+        
+        // Mengecek apakah respons berhasil
+        if (response.ok) {
+            const data = await response.json();
+            
+            // Jika NIK sudah ada, tampilkan alert
+            if (data.isUnique === false) {
+                return false;  // NIK sudah terdaftar, kembalikan false
+            }
+            
+            // Jika NIK unik, kembalikan true
+            return true;
+        } else {
+            console.error("Gagal memeriksa NIK");
+            alert("Terjadi kesalahan saat memeriksa NIK.");
+            return false;
+        }
+    } catch (error) {
+        console.error("Error checking NIK uniqueness:", error);
+        alert("Terjadi kesalahan, silakan coba lagi.");
+        return false;
+    }
+}
+
+
+function closeEditModal() {
+    const modal = document.getElementById('edit-modal');
+    modal.classList.add('hidden');  // Menambahkan kelas hidden untuk menyembunyikan modal
+}
+
+// Menutup modal jika klik area luar modal
+document.getElementById('edit-modal').addEventListener('click', function(event) {
+    const modalContent = document.querySelector('#edit-modal > div');
+    if (event.target === this) {
+        closeEditModal();  // Menutup modal jika area luar modal diklik
+    }
 });

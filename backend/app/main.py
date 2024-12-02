@@ -90,9 +90,17 @@ def read_penduduk_by_nik(nik: str, db: Session = Depends(get_db)):
     
     return PendudukBase.from_orm(penduduk)
 
-# Endpoint untuk membuat data penduduk baru
+
 @app.post("/penduduk/", response_model=PendudukBase)
 def create_penduduk(penduduk: PendudukBase, db: Session = Depends(get_db)):
+    # Cek apakah NIK sudah ada di database
+    db_penduduk = db.query(PendudukSQLAlchemy).filter(PendudukSQLAlchemy.nik == penduduk.NIK).first()
+
+    if db_penduduk:
+        # Mengirimkan HTTPException dengan status 400 dan pesan error
+        raise HTTPException(status_code=400, detail="NIK tidak boleh sama.")
+    
+    # Jika NIK belum ada, buat data baru
     db_penduduk = PendudukSQLAlchemy(
         nik=penduduk.NIK,
         nama=penduduk.Nama,
@@ -103,10 +111,13 @@ def create_penduduk(penduduk: PendudukBase, db: Session = Depends(get_db)):
         pekerjaan=penduduk.Pekerjaan,
         kewarganegaraan=penduduk.Kewarganegaraan
     )
+
     db.add(db_penduduk)
     db.commit()
     db.refresh(db_penduduk)
+    
     return PendudukBase.from_orm(db_penduduk)
+
 
 # Endpoint untuk memperbarui data penduduk
 @app.put("/penduduk/{nik}", response_model=PendudukBase)
@@ -145,3 +156,14 @@ def read_root():
             return {"message": "Successfully connected to PostgreSQL"}
     except Exception as e:
         return {"message": "Failed to connect to PostgreSQL", "error": str(e)}
+
+class NIKCheck(BaseModel):
+    NIK: str
+
+@app.get("/penduduk/check-nik/{nik}", response_model=dict)
+def check_nik(nik: str, db: Session = Depends(get_db)):
+    # Mengecek apakah NIK sudah ada di database
+    db_penduduk = db.query(PendudukSQLAlchemy).filter(PendudukSQLAlchemy.nik == nik).first()
+    if db_penduduk:
+        return {"isUnique": False}  # NIK sudah terdaftar
+    return {"isUnique": True}  # NIK unik, belum terdaftar
