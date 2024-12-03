@@ -26,8 +26,8 @@ function renderTable() {
             <td class="px-4 py-2">${item.pekerjaan}</td>
             <td class="px-4 py-2">${item.kewarganegaraan}</td>
             <td class="px-4 py-2 text-center">
-                <button type="button" class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-full text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700" onclick="editData(${item.nik})">Edit</button>
-                <button type="button" class="text-white bg-red-700 hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900" onclick="showDeleteModal(${item.nik})">Delete</button>
+                <button type="button" class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-full text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700" onclick="editData('${item.nik}')">Edit</button>
+                <button type="button" class="text-white bg-red-700 hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900" onclick="showDeleteModal('${item.nik}')">Delete</button>
             </td>
         </tr>`;
         tableBody.insertAdjacentHTML('beforeend', row);
@@ -36,15 +36,13 @@ function renderTable() {
     renderPagination();
 }
 
-// / Fungsi untuk merender pagination
 function renderPagination() {
-    const totalPages = Math.ceil(filteredData.length / rowsPerPage);  // Menghitung total halaman
+    const totalPages = Math.ceil(filteredData.length / rowsPerPage); 
     const paginationContainer = document.getElementById('pagination-buttons');
-    paginationContainer.innerHTML = '';  // Hapus halaman sebelumnya
+    paginationContainer.innerHTML = ''; 
 
-    // Tombol Previous
     const prevBtn = document.getElementById('prevBtn');
-    prevBtn.classList.toggle('disabled', currentPage === 1); // Disable Previous jika di halaman pertama
+    prevBtn.classList.toggle('disabled', currentPage === 1);
     prevBtn.addEventListener('click', () => {
         if (currentPage > 1) {
             currentPage--;
@@ -52,13 +50,11 @@ function renderPagination() {
         }
     });
 
-    // Tombol Halaman Dinamis
     for (let i = 1; i <= totalPages; i++) {
         const pageButton = document.createElement('li');
         pageButton.classList.add('cursor-pointer', 'px-4', 'py-2', 'bg-gray-200', 'rounded-md');
         pageButton.textContent = i;
 
-        // Menandai halaman aktif
         if (i === currentPage) {
             pageButton.classList.add('bg-blue-600', 'text-white');
         }
@@ -71,9 +67,8 @@ function renderPagination() {
         paginationContainer.appendChild(pageButton);
     }
 
-    // Tombol Next
     const nextBtn = document.getElementById('nextBtn');
-    nextBtn.classList.toggle('disabled', currentPage === totalPages); // Disable Next jika di halaman terakhir
+    nextBtn.classList.toggle('disabled', currentPage === totalPages);
     nextBtn.addEventListener('click', () => {
         if (currentPage < totalPages) {
             currentPage++;
@@ -97,7 +92,7 @@ function closeDeleteModal() {
 
 async function deleteRow() {
     if (!dataToDelete) return;
-
+    console.log("dataTodelete: ", dataToDelete)
     try {
         const response = await fetch(`${baseUrl}${dataToDelete}/`, {
             method: 'DELETE',
@@ -111,12 +106,12 @@ async function deleteRow() {
             filteredData = [...data];
             
             const rowToDelete = document.getElementById(dataToDelete);
+            console.log('Searching for row with ID:', `nik-${dataToDelete}`);
             if (rowToDelete) {
-                rowToDelete.remove(); // Menghapus elemen baris dari DOM
+                console.log('Deleting row:', rowToDelete); 
+                rowToDelete.remove(); 
             }
-
             renderTable();
-
             closeDeleteModal();
             alert('Data berhasil dihapus');
         } else {
@@ -127,8 +122,8 @@ async function deleteRow() {
         console.error('Terjadi kesalahan:', error);
         alert('Terjadi kesalahan saat menghapus data');
     }
-}
 
+}
 
 document.getElementById('delete-confirm').addEventListener('click', deleteRow);
 document.getElementById('delete-cancel').addEventListener('click', closeDeleteModal);
@@ -148,7 +143,6 @@ async function createRow() {
         return; 
     }
 
-    // Pastikan NIK terdiri dari 16 digit
     if (nik.length !== 16) {
         alert("NIK harus terdiri dari 16 digit!");
         return;
@@ -158,16 +152,15 @@ async function createRow() {
     if (!isNikUnique) {
         const shouldChangeNik = confirm("NIK sudah terdaftar, silakan ubah NIK atau batal input data.");
         if (shouldChangeNik) {
-            return; // Jika user memilih untuk mengubah NIK, proses dibatalkan dan form tetap terbuka
+            return;
         } else {
-            resetForm();  // Jika user memilih untuk membatalkan, form akan direset
-            closeModal();  // Menutup modal
+            resetForm();
+            closeModal(); 
             alert("Input data dibatalkan.");
-            return;  // Menghentikan proses
+            return; 
         }
     }
 
-    // Buat objek data baru
     const newData = {
         nik,
         nama,
@@ -209,20 +202,15 @@ async function createRow() {
     closeModal();
 }
 
-
-
-// mengedit data
 async function editData(nik) {
-    nik = nik.toString().trim(); // Mengkonversi ke string dan menghapus spasi ekstra
+    nik = nik.toString().trim();
 
-    // Mencari data berdasarkan NIK
     const dataToEdit = data.find(item => item.nik.toString().trim() === nik);
 
     if (dataToEdit) {
-        console.log('Data yang akan diedit:', dataToEdit);  // Menampilkan data yang akan diedit
+        console.log('Data yang akan diedit:', dataToEdit);
 
-        // Mengisi input modal dengan data yang akan diedit
-        document.getElementById('edit-nik').value = dataToEdit.nik; // NIK tetap tidak bisa diubah
+        document.getElementById('edit-nik').value = dataToEdit.nik;
         document.getElementById('edit-nama').value = dataToEdit.nama;
         document.getElementById('edit-tempat-lahir').value = dataToEdit.tempat_lahir;
         document.getElementById('edit-tanggal-lahir').value = dataToEdit.tanggal_lahir;
@@ -247,7 +235,6 @@ async function editData(nik) {
     }
 }
 
-
 async function updateRow(nik) {
     // Mengambil nilai dari form modal
     const nikVal = document.getElementById('edit-nik').value;
@@ -259,7 +246,6 @@ async function updateRow(nik) {
     const pekerjaan = document.getElementById('edit-pekerjaan').value;
     const kewarganegaraan = document.getElementById('edit-kewarganegaraan').value;
 
-    // Membuat objek dengan data yang akan diperbarui
     const updatedData = {
         nik: nikVal,
         nama,
@@ -430,9 +416,6 @@ function openModal() {
     document.getElementById('add-modal').classList.remove('hidden');
 }
 
-
-
-// Initialize the modal by showing the first step
 showStep(currentStep);
 
 
@@ -487,7 +470,7 @@ function resetForm() {
 async function checkNikUniqueness(nik) {
     try {
         // Mengambil data dari API untuk memeriksa NIK
-        const response = await fetch(`http://172.20.0.4:8000/penduduk/check-nik/${nik}`);
+        const response = await fetch(`${baseUrl}check-nik/${nik}`);
         
         // Mengecek apakah respons berhasil
         if (response.ok) {
@@ -515,14 +498,13 @@ async function checkNikUniqueness(nik) {
 
 function closeEditModal() {
     const modal = document.getElementById('edit-modal');
-    modal.classList.add('hidden');  // Menambahkan kelas hidden untuk menyembunyikan modal
+    modal.classList.add('hidden');
 }
 
-// Menutup modal jika klik area luar modal
 document.getElementById('edit-modal').addEventListener('click', function(event) {
     const modalContent = document.querySelector('#edit-modal > div');
     if (event.target === this) {
-        closeEditModal();  // Menutup modal jika area luar modal diklik
+        closeEditModal(); 
     }
 });
 
