@@ -30,7 +30,13 @@
 
     <!-- Modal untuk Edit Data -->
     <div id="edit-modal" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center hidden">
-        <div class="bg-white p-6 rounded-lg w-11/12 md:w-96">
+        <div class="bg-white p-6 rounded-lg w-11/12 md:w-96 relative">
+                            <!-- Close Button -->
+                <button onclick="closeEditModal()" class="absolute top-2 right-2 text-gray-500 hover:text-gray-700">
+                    <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
             <h2 class="text-xl font-semibold mb-4">Edit Data</h2>
             <div>
                 <label for="edit-nik" class="block text-gray-700">NIK</label>
@@ -84,6 +90,62 @@
         </div>
     </div>
 
+<!-- Modal Pencarian -->
+<div id="searchModal" class="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-50 z-50 hidden">
+    <div class="bg-white rounded-lg shadow-lg w-96 p-6 relative">
+                <!-- Close Button -->
+                <button onclick="closeSearchModal()" class="absolute top-2 right-2 text-gray-500 hover:text-gray-700">
+                    <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+        <h3 class="text-xl font-semibold mb-4">Cari Data Penduduk</h3>
+        <form id="searchForm" class="space-y-4">
+            <div>
+                <label for="search-nik" class="block text-sm font-medium text-gray-700">NIK</label>
+                <input id="search-nik" type="text" class="block w-full p-2 border border-gray-300 rounded-lg" placeholder="Masukkan NIK" />
+            </div>
+            <div>
+                <label for="search-nama" class="block text-sm font-medium text-gray-700">Nama</label>
+                <input id="search-nama" type="text" class="block w-full p-2 border border-gray-300 rounded-lg" placeholder="Masukkan Nama" />
+            </div>
+            <div>
+                <label for="search-tempat-lahir" class="block text-sm font-medium text-gray-700">Tempat Lahir</label>
+                <input id="search-tempat-lahir" type="text" class="block w-full p-2 border border-gray-300 rounded-lg" placeholder="Masukkan Tempat Lahir" />
+            </div>
+            <div>
+                <label for="search-tanggal-lahir" class="block text-sm font-medium text-gray-700">Tanggal Lahir</label>
+                <input id="search-tanggal-lahir" type="date" class="block w-full p-2 border border-gray-300 rounded-lg" />
+            </div>
+            <div>
+                <label for="search-jenis-kelamin" class="block text-sm font-medium text-gray-700">Jenis Kelamin</label>
+                <select id="search-jenis-kelamin" class="block w-full p-2 border border-gray-300 rounded-lg">
+                    <option value="">Pilih Jenis Kelamin</option>
+                    <option value="Laki-laki">Laki-laki</option>
+                    <option value="Perempuan">Perempuan</option>
+                </select>
+            </div>
+            <div>
+                <label for="search-agama" class="block text-sm font-medium text-gray-700">Agama</label>
+                <input id="search-agama" type="text" class="block w-full p-2 border border-gray-300 rounded-lg" placeholder="Masukkan Agama" />
+            </div>
+            <div>
+                <label for="search-pekerjaan" class="block text-sm font-medium text-gray-700">Pekerjaan</label>
+                <input id="search-pekerjaan" type="text" class="block w-full p-2 border border-gray-300 rounded-lg" placeholder="Masukkan Pekerjaan" />
+            </div>
+            <div>
+                <label for="search-kewarganegaraan" class="block text-sm font-medium text-gray-700">Kewarganegaraan</label>
+                <input id="search-kewarganegaraan" type="text" class="block w-full p-2 border border-gray-300 rounded-lg" placeholder="Masukkan Kewarganegaraan" />
+            </div>
+
+            <div class="flex justify-end mt-4 space-x-2">
+                <button type="button" class="bg-gray-500 text-white px-4 py-2 rounded-lg" onclick="closeSearchModal()">Cancel</button>
+                <button type="button" class="bg-blue-600 text-white px-4 py-2 rounded-lg" onclick="searchData()">Search</button>
+            </div>
+        </form>
+    </div>
+</div>
+
 
     <!-- Modal Konfirmasi Hapus-->
     <div id="delete-modal" class="relative z-10 hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
@@ -135,7 +197,7 @@
                 
                  <!-- add data -->
                 <button onclick="showModal()" type="button" class="focus:outline-none text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900">Add Data</button>
-                <form class="flex items-center space-x-2 w-[60%]">   
+                <form class="flex items-center space-x-2 w-[60%]" onsubmit="handleSearch(event)">   
                     <label for="search" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
                     <div class="relative w-full">
                         <!-- Search Icon -->
@@ -151,9 +213,12 @@
                         
 
                         <!-- Search Button -->
-                        <button type="submit" class="text-white absolute right-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                            Search
-                        </button>
+                    <button type="button" 
+                            class="text-white absolute right-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                            onclick="showSearchModal()">
+                        Search
+                    </button>
+
                     </div>
                 </form>     
                 <button onclick="(() => document.body.classList.toggle('dark'))()"

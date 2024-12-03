@@ -509,3 +509,18 @@ document.getElementById('edit-modal').addEventListener('click', function(event) 
 });
 
 
+function handleSearch(event) {
+    event.preventDefault(); // Mencegah form submit dan refresh halaman
+    searchTable(); // Panggil fungsi searchTable
+}
+
+// Fungsi untuk menampilkan modal pencarian
+function showSearchModal() {
+    const modal = document.getElementById('searchModal');
+    modal.classList.remove('hidden');  // Menghapus kelas 'hidden' untuk menampilkan modal
+}
+// Fungsi untuk menutup modal pencarian
+function closeSearchModal() {
+    const modal = document.getElementById('searchModal');
+    modal.classList.add('hidden');  // Menambahkan kelas 'hidden' untuk menyembunyikan modal
+}
