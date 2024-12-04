@@ -91,53 +91,73 @@
     </div>
 
 <!-- Modal Pencarian -->
+<!-- Modal Pencarian -->
 <div id="searchModal" class="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-50 z-50 hidden">
-    <div class="bg-white rounded-lg shadow-lg w-96 p-6 relative">
-                <!-- Close Button -->
-                <button onclick="closeSearchModal()" class="absolute top-2 right-2 text-gray-500 hover:text-gray-700">
-                    <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                    </svg>
-                </button>
+    <div class="bg-white rounded-lg shadow-lg w-96 p-6 relative w-full max-w-lg">
+        <!-- Close Button -->
+        <button onclick="closeSearchModal()" class="absolute top-2 right-2 text-gray-500 hover:text-gray-700">
+            <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+        </button>
+        
         <h3 class="text-xl font-semibold mb-4">Cari Data Penduduk</h3>
         <form id="searchForm" class="space-y-4">
-            <div>
-                <label for="search-nik" class="block text-sm font-medium text-gray-700">NIK</label>
-                <input id="search-nik" type="text" class="block w-full p-2 border border-gray-300 rounded-lg" placeholder="Masukkan NIK" />
+            <!-- Top 4 fields -->
+            <div class="grid grid-cols-2 gap-4 mb-4">
+                <div>
+                    <label for="search-nik" class="block text-sm font-medium text-gray-700">NIK</label>
+                    <input id="search-nik" type="text" class="block w-full p-2 border border-gray-300 rounded-lg" placeholder="Masukkan NIK" />
+                </div>
+                <div>
+                    <label for="search-nama" class="block text-sm font-medium text-gray-700">Nama</label>
+                    <input id="search-nama" type="text" class="block w-full p-2 border border-gray-300 rounded-lg" placeholder="Masukkan Nama" />
+                </div>
+                <div>
+                    <label for="search-tempat-lahir" class="block text-sm font-medium text-gray-700">Tempat Lahir</label>
+                    <input id="search-tempat-lahir" type="text" class="block w-full p-2 border border-gray-300 rounded-lg" placeholder="Masukkan Tempat Lahir" />
+                </div>
+                <div>
+                    <label for="search-tanggal-lahir" class="block text-sm font-medium text-gray-700">Tanggal Lahir</label>
+                    <input id="search-tanggal-lahir" type="date" class="block w-full p-2 border border-gray-300 rounded-lg" />
+                </div>
             </div>
-            <div>
-                <label for="search-nama" class="block text-sm font-medium text-gray-700">Nama</label>
-                <input id="search-nama" type="text" class="block w-full p-2 border border-gray-300 rounded-lg" placeholder="Masukkan Nama" />
-            </div>
-            <div>
-                <label for="search-tempat-lahir" class="block text-sm font-medium text-gray-700">Tempat Lahir</label>
-                <input id="search-tempat-lahir" type="text" class="block w-full p-2 border border-gray-300 rounded-lg" placeholder="Masukkan Tempat Lahir" />
-            </div>
-            <div>
-                <label for="search-tanggal-lahir" class="block text-sm font-medium text-gray-700">Tanggal Lahir</label>
-                <input id="search-tanggal-lahir" type="date" class="block w-full p-2 border border-gray-300 rounded-lg" />
-            </div>
-            <div>
-                <label for="search-jenis-kelamin" class="block text-sm font-medium text-gray-700">Jenis Kelamin</label>
-                <select id="search-jenis-kelamin" class="block w-full p-2 border border-gray-300 rounded-lg">
-                    <option value="">Pilih Jenis Kelamin</option>
-                    <option value="Laki-laki">Laki-laki</option>
-                    <option value="Perempuan">Perempuan</option>
-                </select>
-            </div>
-            <div>
-                <label for="search-agama" class="block text-sm font-medium text-gray-700">Agama</label>
-                <input id="search-agama" type="text" class="block w-full p-2 border border-gray-300 rounded-lg" placeholder="Masukkan Agama" />
-            </div>
-            <div>
-                <label for="search-pekerjaan" class="block text-sm font-medium text-gray-700">Pekerjaan</label>
-                <input id="search-pekerjaan" type="text" class="block w-full p-2 border border-gray-300 rounded-lg" placeholder="Masukkan Pekerjaan" />
-            </div>
-            <div>
-                <label for="search-kewarganegaraan" class="block text-sm font-medium text-gray-700">Kewarganegaraan</label>
-                <input id="search-kewarganegaraan" type="text" class="block w-full p-2 border border-gray-300 rounded-lg" placeholder="Masukkan Kewarganegaraan" />
+            
+            <!-- Bottom 4 fields -->
+            <div class="grid grid-cols-2 gap-4 mb-4">
+                <div>
+                    <label for="search-jenis-kelamin" class="block text-sm font-medium text-gray-700">Jenis Kelamin</label>
+                    <select id="search-jenis-kelamin" class="block w-full p-2 border border-gray-300 rounded-lg">
+                        <option value="">Pilih Jenis Kelamin</option>
+                        <option value="Laki-laki">Laki-laki</option>
+                        <option value="Perempuan">Perempuan</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="agama" class="block text-sm font-medium text-gray-700">Agama</label>
+                    <select id="agama" class="w-full px-3 py-2 border border-gray-300 rounded-md mb-2" required>
+                        <option value="Islam">Islam</option>
+                        <option value="Kristen">Kristen</option>
+                        <option value="Katolik">Katolik</option>
+                        <option value="Hindu">Hindu</option>
+                        <option value="Buddha">Buddha</option>
+                        <option value="Konghucu">Konghucu</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="search-pekerjaan" class="block text-sm font-medium text-gray-700">Pekerjaan</label>
+                    <input id="search-pekerjaan" type="text" class="block w-full p-2 border border-gray-300 rounded-lg" placeholder="Masukkan Pekerjaan" />
+                </div>
+                <div>
+                    <label for="search-kewarganegaraan" class="block text-sm font-medium text-gray-700">Kewarganegaraan</label>
+                    <select id="search-kewarganegaraan" class="w-full px-3 py-2 border border-gray-300 rounded-md mb-4" required>
+                        <option value="WNI">WNI</option>
+                        <option value="WNA">WNA</option>
+                    </select>
+                </div>
             </div>
 
+            <!-- Buttons -->
             <div class="flex justify-end mt-4 space-x-2">
                 <button type="button" class="bg-gray-500 text-white px-4 py-2 rounded-lg" onclick="closeSearchModal()">Cancel</button>
                 <button type="button" class="bg-blue-600 text-white px-4 py-2 rounded-lg" onclick="searchData()">Search</button>
@@ -145,6 +165,7 @@
         </form>
     </div>
 </div>
+
 
 
     <!-- Modal Konfirmasi Hapus-->
@@ -388,7 +409,7 @@
         </svg>
     
         <!-- Teks -->
-        <span class="ml-2">@pratamarizki22</span>
+        <span class="ml-2">@nicetrydidi</span>
     </a>
     
       

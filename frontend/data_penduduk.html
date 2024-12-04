@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://kit.fontawesome.com/fd77badbd4.js" crossorigin="anonymous"></script>
+    <title>Input Data Penduduk</title>
+</head>
+<body class="bg-gray-100">
+    <!-- Header -->
+    <nav class="mt-8 mx-4 flex justify-between">
+        <a href="#" class="text-3xl font-bold p-2 my-auto">INPUT YOUR <span class="text-blue-500">DATA</span></a>
+        <div class="mb-4 flex">
+            <button class="w-8 h-8 flex mt-[22px] items-center justify-center bg-black text-white rounded-md mr-3 hover:bg-gray-800">
+                <i class="fa-solid fa-plus"></i>
+            </button>
+            <div>
+                <label for="search" class="block text-sm text-gray-700 font-semibold">Search</label>
+                <input 
+                    type="text" 
+                    id="search" 
+                    placeholder="Masukkan NIK" 
+                    class="w-full px-2 py-1 border-2 text-center border-slate-900 drop-shadow-md rounded-sm focus:outline-none focus:ring-2 focus:ring-slate-900">
+            </div>
+        </div>
+    </nav>
+    <!-- Content -->
+    <div class="px-8">
+        <table class="table-auto w-full mt-4 bg-white shadow-md">
+            <thead>
+                <tr class="bg-gray-50 text-center">
+                    <th class="py-2 text-center">NIK</th>
+                    <th class="py-2 text-center">Nama</th>
+                    <th class="py-2 text-center">Sex</th>
+                    <th class="py-2 text-center">Agama</th>
+                    <th class="py-2 text-center">Pekerjaan</th>
+                    <th class="py-2 text-center">Alamat</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="border-t overflow-hidden">
+                    <td class="px-4 py-2 text-center">3312345678901234</td>
+                    <td class="px-4 py-2 text-center">Ramy</td>
+                    <td class="px-4 py-2 text-center">Laki - Laki</td>
+                    <td class="px-4 py-2 text-center">Islam</td>
+                    <td class="px-4 py-2 text-center">Pegawai</td>
+                    <td class="px-4 py-2 text-center">Jalan Raya Nusaka, No 2</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <!-- Modal -->
+    <div class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center hidden" id="modal">
+        <div class="bg-white shadow-lg rounded-lg p-6 w-[400px]">
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center">
+                    <div class="w-8 h-8 bg-gray-500 text-white flex items-center justify-center rounded-full">i</div>
+                    <h2 class="ml-2 text-lg font-semibold text-gray-700">Mari, Input Data Penduduk</h2>
+                </div>
+                <button id="closeModal" class="text-slate-900 hover:text-gray-700">
+                    <i class="fa-solid fa-x"></i>
+                </button>
+            </div>
+            <form id="form">
+                <div id="step-1" class="step">
+                    <div class="mb-4">
+                        <label for="nik" class="block text-sm font-medium text-gray-700">NIK</label>
+                        <input type="text" id="nik" class="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div class="mb-4">
+                        <label for="nama" class="block text-sm font-medium text-gray-700">Nama</label>
+                        <input type="text" id="nama" class="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                </div>
+                <div id="step-2" class="step hidden">
+                    <div class="mb-4">
+                        <label for="tempat-lahir" class="block text-sm font-medium text-gray-700">Tempat Lahir</label>
+                        <input type="text" id="tempat-lahir" class="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div class="mb-4">
+                        <label for="tanggal-lahir" class="block text-sm font-medium text-gray-700">Tanggal Lahir</label>
+                        <input type="date" id="tanggal-lahir" class="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                </div>
+                 <!-- Step 3 -->
+                 <div id="step-3" class="step hidden">
+                    <div class="mb-4">
+                        <label for="jenis-kelamin" class="block text-sm font-medium text-gray-700">Jenis Kelamin</label>
+                        <select id="jenis-kelamin" class="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="Laki-laki">Laki-laki</option>
+                            <option value="Perempuan">Perempuan</option>
+                        </select>
+                    </div>
+                    <div class="mb-4">
+                        <label for="agama" class="block text-sm font-medium text-gray-700">Agama</label>
+                        <input type="text" id="agama" class="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div class="mb-4">
+                        <label for="pekerjaan" class="block text-sm font-medium text-gray-700">Pekerjaan</label>
+                        <input type="text" id="pekerjaan" class="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                </div>
+                <!-- Step 4 -->
+                <div id="step-4" class="step hidden">
+                    <div class="mb-4">
+                        <label for="rt-rw" class="block text-sm font-medium text-gray-700">RT/RW</label>
+                        <input type="text" id="rt-rw" class="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div class="mb-4">
+                        <label for="desa" class="block text-sm font-medium text-gray-700">Desa</label>
+                        <input type="text" id="desa" class="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div class="mb-4">
+                        <label for="kecamatan" class="block text-sm font-medium text-gray-700">Kecamatan</label>
+                        <input type="text" id="kecamatan" class="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                </div>
+                <!-- Tambahkan step 3 dan 4 sesuai struktur ini -->
+                <div class="mt-4 flex justify-between items-center">
+                    <button type="button" id="prev" class="px-4 py-1 border border-gray-700 text-gray-700 rounded-md hover:bg-gray-400 hidden">Back</button>
+                    <button type="button" id="next" class="px-4 py-1 bg-blue-900 text-white rounded-md hover:bg-blue-600">Next</button>
+                </div>
+                <div class="mt-4 flex justify-center">
+                    <div class="h-1 w-24 bg-green-500 rounded-full mx-1 progress-bar"></div>
+                    <div class="h-1 w-24 bg-gray-300 rounded-full mx-1 progress-bar"></div>
+                    <div class="h-1 w-24 bg-gray-300 rounded-full mx-1 progress-bar"></div>
+                    <div class="h-1 w-24 bg-gray-300 rounded-full mx-1 progress-bar"></div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script>
+        let currentStep = 1;
+        const steps = document.querySelectorAll(".step");
+        const progressBar = document.querySelectorAll(".progress-bar");
+        const prevButton = document.getElementById("prev");
+        const nextButton = document.getElementById("next");
+
+        function updateStep() {
+            steps.forEach((step, index) => {
+                step.classList.toggle("hidden", index !== currentStep - 1);
+            });
+            progressBar.forEach((bar, index) => {
+                bar.classList.toggle("bg-green-500", index < currentStep);
+                bar.classList.toggle("bg-gray-300", index >= currentStep);
+            });
+            prevButton.classList.toggle("hidden", currentStep === 1);
+            nextButton.textContent = currentStep === steps.length ? "Finish" : "Next";
+        }
+
+        document.getElementById("next").addEventListener("click", () => {
+            if (currentStep < steps.length) {
+                currentStep++;
+                updateStep();
+            } else {
+                alert("Form selesai!");
+                document.getElementById("modal").classList.add("hidden");
+            }
+        });
+
+        document.getElementById("prev").addEventListener("click", () => {
+            if (currentStep > 1) {
+                currentStep--;
+                updateStep();
+            }
+        });
+
+        document.getElementById("closeModal").addEventListener("click", () => {
+            document.getElementById("modal").classList.add("hidden");
+        });
+
+        // Open Modal (Optional Example)
+        setTimeout(() => {
+            document.getElementById("modal").classList.remove("hidden");
+            updateStep();
+        }, 1000);
+    </script>
+</body>
+</html>
